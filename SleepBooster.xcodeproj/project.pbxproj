@@ -9,21 +9,25 @@
 /* Begin PBXBuildFile section */
 		3487C53E241FBDF5004DDD56 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487C53D241FBDF5004DDD56 /* AppDelegate.swift */; };
 		3487C540241FBDF5004DDD56 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487C53F241FBDF5004DDD56 /* SceneDelegate.swift */; };
-		3487C542241FBDF5004DDD56 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487C541241FBDF5004DDD56 /* ViewController.swift */; };
+		3487C542241FBDF5004DDD56 /* SleepVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487C541241FBDF5004DDD56 /* SleepVC.swift */; };
 		3487C545241FBDF5004DDD56 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3487C543241FBDF5004DDD56 /* Main.storyboard */; };
 		3487C547241FBDFC004DDD56 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3487C546241FBDFC004DDD56 /* Assets.xcassets */; };
 		3487C54A241FBDFC004DDD56 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3487C548241FBDFC004DDD56 /* LaunchScreen.storyboard */; };
+		3487C555241FC8EF004DDD56 /* AudioRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487C554241FC8EF004DDD56 /* AudioRecorder.swift */; };
+		3487C55A241FDCAD004DDD56 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487C559241FDCAD004DDD56 /* AudioPlayer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3487C53A241FBDF5004DDD56 /* SleepBooster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SleepBooster.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3487C53D241FBDF5004DDD56 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3487C53F241FBDF5004DDD56 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		3487C541241FBDF5004DDD56 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		3487C541241FBDF5004DDD56 /* SleepVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepVC.swift; sourceTree = "<group>"; };
 		3487C544241FBDF5004DDD56 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		3487C546241FBDFC004DDD56 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3487C549241FBDFC004DDD56 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3487C54B241FBDFC004DDD56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3487C554241FC8EF004DDD56 /* AudioRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorder.swift; sourceTree = "<group>"; };
+		3487C559241FDCAD004DDD56 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +60,49 @@
 		3487C53C241FBDF5004DDD56 /* SleepBooster */ = {
 			isa = PBXGroup;
 			children = (
+				3487C556241FDC85004DDD56 /* UI */,
+				3487C553241FC8E0004DDD56 /* Audio */,
+				3487C551241FC8AF004DDD56 /* Modules */,
+				3487C557241FDC8A004DDD56 /* Misc */,
 				3487C53D241FBDF5004DDD56 /* AppDelegate.swift */,
-				3487C53F241FBDF5004DDD56 /* SceneDelegate.swift */,
-				3487C541241FBDF5004DDD56 /* ViewController.swift */,
+			);
+			path = SleepBooster;
+			sourceTree = "<group>";
+		};
+		3487C551241FC8AF004DDD56 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				3487C541241FBDF5004DDD56 /* SleepVC.swift */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		3487C553241FC8E0004DDD56 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				3487C554241FC8EF004DDD56 /* AudioRecorder.swift */,
+				3487C559241FDCAD004DDD56 /* AudioPlayer.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		3487C556241FDC85004DDD56 /* UI */ = {
+			isa = PBXGroup;
+			children = (
 				3487C543241FBDF5004DDD56 /* Main.storyboard */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		3487C557241FDC8A004DDD56 /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				3487C53F241FBDF5004DDD56 /* SceneDelegate.swift */,
 				3487C546241FBDFC004DDD56 /* Assets.xcassets */,
 				3487C548241FBDFC004DDD56 /* LaunchScreen.storyboard */,
 				3487C54B241FBDFC004DDD56 /* Info.plist */,
 			);
-			path = SleepBooster;
+			path = Misc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,8 +176,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3487C542241FBDF5004DDD56 /* ViewController.swift in Sources */,
+				3487C542241FBDF5004DDD56 /* SleepVC.swift in Sources */,
 				3487C53E241FBDF5004DDD56 /* AppDelegate.swift in Sources */,
+				3487C55A241FDCAD004DDD56 /* AudioPlayer.swift in Sources */,
+				3487C555241FC8EF004DDD56 /* AudioRecorder.swift in Sources */,
 				3487C540241FBDF5004DDD56 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
