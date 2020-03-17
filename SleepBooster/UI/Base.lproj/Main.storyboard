@@ -25,49 +25,47 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OHi-6f-qdA">
-                                        <rect key="frame" x="0.0" y="56" width="414" height="565"/>
+                                        <rect key="frame" x="0.0" y="56" width="414" height="597"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G2I-Hq-n5s" userLabel="Timer">
-                                        <rect key="frame" x="0.0" y="641" width="414" height="36.5"/>
+                                        <rect key="frame" x="0.0" y="673" width="414" height="20.5"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LRb-6W-wHl">
-                                                <rect key="frame" x="8" y="8" width="356" height="20.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Sleep Timer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LRb-6W-wHl">
+                                                <rect key="frame" x="0.0" y="0.0" width="370.5" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0uH-aR-JUl">
-                                                <rect key="frame" x="364" y="8" width="42" height="20.5"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <nil key="textColor"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0uH-aR-JUl">
+                                                <rect key="frame" x="370.5" y="0.0" width="43.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                                <color key="textColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
                                         <gestureRecognizers/>
-                                        <directionalEdgeInsets key="directionalLayoutMargins" top="8" leading="8" bottom="8" trailing="8"/>
                                         <connections>
-                                            <outletCollection property="gestureRecognizers" destination="22P-Ed-56V" appends="YES" id="6aP-ds-PTF"/>
+                                            <outletCollection property="gestureRecognizers" destination="eNz-uB-tI0" appends="YES" id="4mL-sl-rPW"/>
                                         </connections>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="l9D-Ii-EWx" userLabel="Alarm">
-                                        <rect key="frame" x="0.0" y="697.5" width="414" height="36.5"/>
+                                        <rect key="frame" x="0.0" y="713.5" width="414" height="20.5"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wSN-wM-rVJ">
-                                                <rect key="frame" x="8" y="8" width="356" height="20.5"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Alarm" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wSN-wM-rVJ">
+                                                <rect key="frame" x="0.0" y="0.0" width="370.5" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g5t-fW-esI">
-                                                <rect key="frame" x="364" y="8" width="42" height="20.5"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <nil key="textColor"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g5t-fW-esI">
+                                                <rect key="frame" x="370.5" y="0.0" width="43.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                                <color key="textColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
                                         <gestureRecognizers/>
-                                        <directionalEdgeInsets key="directionalLayoutMargins" top="8" leading="8" bottom="8" trailing="8"/>
                                         <connections>
                                             <outletCollection property="gestureRecognizers" destination="22P-Ed-56V" appends="YES" id="ZXf-Oy-ZbF"/>
                                         </connections>
@@ -85,7 +83,6 @@
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="I5K-hY-SIL">
                                         <rect key="frame" x="0.0" y="818" width="414" height="0.0"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" id="Q13-DU-Ico"/>
                                             <constraint firstAttribute="height" id="h8Y-1A-Aeu"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -111,8 +108,16 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="eNz-uB-tI0" userLabel="TimerGesture"/>
-                <tapGestureRecognizer id="22P-Ed-56V" userLabel="AlarmGesture"/>
+                <tapGestureRecognizer id="eNz-uB-tI0" userLabel="TimerGesture">
+                    <connections>
+                        <action selector="sleepTimerSelectionPressed:" destination="BYZ-38-t0r" id="pnF-De-vXD"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="22P-Ed-56V" userLabel="AlarmGesture">
+                    <connections>
+                        <action selector="alarmSelectionPressed:" destination="BYZ-38-t0r" id="Esz-QX-spO"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="139" y="99"/>
         </scene>

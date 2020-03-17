@@ -18,6 +18,8 @@ class SleepVC: UIViewController {
     
     @IBOutlet weak var pickerTextField: UITextField!
     
+    private var datePicker: UIDatePicker?
+    
     // MARK: Injections
     var presenter: SleepPresenter!
     
@@ -29,16 +31,25 @@ class SleepVC: UIViewController {
         
         self.presenter = presenter
         presenter.viewDidLoad()
+        
+        setupAlarmPicker()
     }
 
     // MARK: - UI
     @IBAction func actionPressed(_ sender: UIButton) {
         presenter.actionButtonPressed()
     }
+    @IBAction func sleepTimerSelectionPressed(_ sender: UITapGestureRecognizer) {
+        presentSleepTimerSelection()
+    }
+    
+    @IBAction func alarmSelectionPressed(_ sender: UITapGestureRecognizer) {
+        presentAlarmPicker()
+    }
     
     // MARK: - SleepTimer
     
-    private func setupSleepTimer() {
+    private func presentSleepTimerSelection() {
         let availableMinutes = presenter.sleepTimerIntervals
         
         let alert = UIAlertController(title: "Sleep Timer", message: nil, preferredStyle: .actionSheet)
@@ -55,25 +66,44 @@ class SleepVC: UIViewController {
         }))
         actions.append(.init(title: "Cancel", style: .cancel, handler: nil))
         
+        actions.forEach { alert.addAction($0) }
+        
         present(alert, animated: true) { }
     }
     
     // MARK: - Alarm
-    
+
     private func setupAlarmPicker() {
         let datePicker = UIDatePicker()
-        datePicker.addTarget(self, action: #selector(alarmTimeSelected(_:)), for: .valueChanged)
         datePicker.datePickerMode = .time
+        self.datePicker = datePicker
+        
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelAlarmTimeSelection))
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneAlarmTimeSelection))
+        let alarmLabel = UILabel()
+        alarmLabel.text = "Alarm"
+        let text = UIBarButtonItem(customView: alarmLabel)
+        toolbar.setItems([cancel, spacer, text, spacer, done], animated: true)
         
         pickerTextField.inputView = datePicker
+        pickerTextField.inputAccessoryView = toolbar
     }
     
-    private func presentAlarm() {
+    private func presentAlarmPicker() {
         pickerTextField.becomeFirstResponder()
     }
     
-    @objc private func alarmTimeSelected(_ sender: UIDatePicker) {
-        presenter.alarmTimeSelected(time: sender.date)
+    @objc private func cancelAlarmTimeSelection() {
+        view.endEditing(true)
+    }
+    
+    @objc private func doneAlarmTimeSelection() {
+        guard let datePicker = datePicker else { return }
+        presenter.alarmTimeSelected(time: datePicker.date)
+        view.endEditing(true)
     }
 }
 
@@ -83,10 +113,16 @@ extension SleepVC: SleepView {
         
     }
     
+    func updateUI() {
+        timerCountLabel.text = presenter.sleepTimerInfo
+        alarmTimeLabel.text = presenter.alarmTimeInfo
+        statusLabel.text = presenter.stateInfo
+    }
+    
     func alarmed() {
         let alert = UIAlertController(title: "Alarm", message: nil, preferredStyle: .alert)
-        let stopAction = UIAlertAction(title: "Stop", style: .default) { _ in
-            // Stop
+        let stopAction = UIAlertAction(title: "Stop", style: .default) { [weak self] _ in
+            self?.presenter.stopPressed()
         }
         alert.addAction(stopAction)
         present(alert, animated: true) { }

@@ -15,15 +15,30 @@ enum SleepState {
     case recording
     case paused
     case alarm
+    
+    var info: String {
+        switch self {
+        case .alarm: return "Alarm"
+        case .idle: return "Idle"
+        case .paused: return "Paused"
+        case .playing: return "Playing"
+        case .recording: return "Recording"
+        }
+    }
 }
 
 protocol SleepView: class {
     func set(state: SleepState)
     func alarmed()
+    func updateUI()
 }
 
 protocol SleepPresenter {
     func viewDidLoad()
+    
+    var sleepTimerInfo: String { get }
+    var alarmTimeInfo: String { get }
+    var stateInfo: String { get }
     
     func sleepTimerSelected(minutes: Int)
     func alarmTimeSelected(time: Date)
@@ -31,6 +46,7 @@ protocol SleepPresenter {
     var sleepTimerIntervals: [Int] { get }
     
     func actionButtonPressed()
+    func stopPressed()
 }
 
 class SleepPresenterImplementation {
@@ -42,10 +58,29 @@ class SleepPresenterImplementation {
     
     let sleepTimerIntervals = [1, 5, 10, 15, 20]
     
+    var sleepTimerInfo: String {
+        sleepTimerDuration == 0 ? "Off" : "\(sleepTimerDuration) min"
+    }
+    
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "hh:mm a"
+        return formatter
+    }()
+    var alarmTimeInfo: String {
+        if let alarmTime = alarmTime {
+            return dateFormatter.string(from: alarmTime)
+        } else {
+            return "Alarm not set"
+        }
+    }
+    
+    var stateInfo: String { state.info }
     
     // MARK: - Private
     private var alarmTime: Date?
-    private var sleepTimerDuration: TimeInterval = 0
+    /// In minutes
+    private var sleepTimerDuration: Int = 0
 
     // MARK: - Audio Recording
     private lazy var audioRecorder: AudioRecorder = { AudioRecorderImplementation(delegate: self) }()
@@ -67,26 +102,55 @@ class SleepPresenterImplementation {
 }
 
 // MARK: - SleepPresenterInput
+extension SleepPresenterImplementation {
+    func update(state: SleepState) {
+        switch state {
+        case .alarm:
+            alarmPlayer?.play()
+            view?.alarmed()
+        case .idle:
+            alarmPlayer?.stop()
+            sleepTimerPlayer?.stop()
+        case .paused:
+            break
+        case .playing:
+            break
+        case .recording:
+            sleepTimerPlayer?.stop()
+            guard let alarmTime = alarmTime else { return }
+            scheduleAlarm(date: alarmTime)
+        }
+    }
+}
+
+// MARK: - SleepPresenterInput
 extension SleepPresenterImplementation: SleepPresenter {
     func viewDidLoad() {
-        
+        view?.updateUI()
     }
 
     /// When passed 0 - the timer is turned off
     func sleepTimerSelected(minutes: Int) {
-        if minutes == 0 {
-            sleepTimerDuration = 0
-        } else {
-            sleepTimerDuration = TimeInterval(minutes) * 60
-        }
+        sleepTimerDuration = minutes
+        view?.updateUI()
     }
     
     func alarmTimeSelected(time: Date) {
+        // TODO: Check whether time it is today or tomorrow
         alarmTime = time
+        view?.updateUI()
     }
     
     func actionButtonPressed() {
         // Logic based on `state`
+        
+        guard let alarmTime = alarmTime else { return }
+        scheduleAlarm(date: alarmTime)
+    }
+    
+    func stopPressed() {
+        state = .idle
+        // Stop alarm
     }
 }
 
@@ -99,12 +163,9 @@ extension SleepPresenterImplementation {
         }
         sleepTimerPlayer.play()
         
-        sleepTimer = Timer.scheduledTimer(withTimeInterval: sleepTimerDuration, repeats: false, block: { [weak self] _ in
+        sleepTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(sleepTimerDuration) * 60, repeats: false, block: { [weak self] _ in
             guard let self = self else { return }
-            // TODO: Extract logic to one method
-            self.sleepTimerPlayer?.stop()
-            self.audioRecorder.startRecording()
-            self.state = .recording
+            self.audioRecorder.startRecording() // AKA try start
             // Stop playing
             // Start recording
             // Change state
@@ -123,7 +184,6 @@ extension SleepPresenterImplementation {
             guard let self = self else { return }
             // TODO: Extract to method
             self.state = .alarm
-            self.alarmPlayer?.play()
         }
     }
 }
@@ -131,7 +191,7 @@ extension SleepPresenterImplementation {
 // MARK: - AudioRecorderDelegate
 extension SleepPresenterImplementation: AudioRecorderDelegate {
     func recordingStarted() {
-        
+        state = .recording
     }
     
     func finishedRecording(isSuccessfully: Bool) {

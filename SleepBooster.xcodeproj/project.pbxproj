@@ -77,6 +77,7 @@
 				3487C553241FC8E0004DDD56 /* Audio */,
 				3487C551241FC8AF004DDD56 /* Modules */,
 				3487C557241FDC8A004DDD56 /* Misc */,
+				3487C54B241FBDFC004DDD56 /* Info.plist */,
 				3487C53D241FBDF5004DDD56 /* AppDelegate.swift */,
 			);
 			path = SleepBooster;
@@ -115,7 +116,6 @@
 				3487C53F241FBDF5004DDD56 /* SceneDelegate.swift */,
 				3487C546241FBDFC004DDD56 /* Assets.xcassets */,
 				3487C548241FBDFC004DDD56 /* LaunchScreen.storyboard */,
-				3487C54B241FBDFC004DDD56 /* Info.plist */,
 			);
 			path = Misc;
 			sourceTree = "<group>";
