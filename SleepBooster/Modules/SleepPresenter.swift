@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UserNotifications
 
 enum SleepState {
     case idle
@@ -18,6 +19,7 @@ enum SleepState {
 
 protocol SleepView: class {
     func set(state: SleepState)
+    func alarmed()
 }
 
 protocol SleepPresenter {
@@ -45,11 +47,20 @@ class SleepPresenterImplementation {
     private var alarmTime: Date?
     private var sleepTimerDuration: TimeInterval = 0
 
+    // MARK: - Audio Recording
+    private lazy var audioRecorder: AudioRecorder = { AudioRecorderImplementation(delegate: self) }()
     
-    //MARK: Injections
+    // MARK: - Sleep Timer
+    private let sleepTimerPlayer = AudioPlayer(file: "nature")
+    private var sleepTimer: Timer?
+    
+    // MARK: - Alarm Player
+    private let alarmPlayer = AudioPlayer(file: "alarm")
+
+    // MARK: - Injections
     private weak var view: SleepView?
     
-    //MARK: LifeCycle
+    // MARK: - LifeCycle
     init(view: SleepView) {
         self.view = view
     }
@@ -75,6 +86,59 @@ extension SleepPresenterImplementation: SleepPresenter {
     }
     
     func actionButtonPressed() {
+        // Logic based on `state`
+    }
+}
+
+// MARK: - Sleep Timer
+extension SleepPresenterImplementation {
+    func startSleepTimer() {
+        guard let sleepTimerPlayer = sleepTimerPlayer else {
+            return
+            // TODO: Handle
+        }
+        sleepTimerPlayer.play()
+        
+        sleepTimer = Timer.scheduledTimer(withTimeInterval: sleepTimerDuration, repeats: false, block: { [weak self] _ in
+            guard let self = self else { return }
+            // TODO: Extract logic to one method
+            self.sleepTimerPlayer?.stop()
+            self.audioRecorder.startRecording()
+            self.state = .recording
+            // Stop playing
+            // Start recording
+            // Change state
+            // Schedule alarm
+        })
+    }
+}
+
+// MARK: - Alarm
+extension SleepPresenterImplementation {
+    func scheduleAlarm(date: Date) {
+        let content = UNNotificationContent()
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: date.timeIntervalSince(Date()), repeats: false)
+        let alarmEvent = UNNotificationRequest(identifier: "sleepAlarm", content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(alarmEvent) { [weak self] error in
+            guard let self = self else { return }
+            // TODO: Extract to method
+            self.state = .alarm
+            self.alarmPlayer?.play()
+        }
+    }
+}
+
+// MARK: - AudioRecorderDelegate
+extension SleepPresenterImplementation: AudioRecorderDelegate {
+    func recordingStarted() {
+        
+    }
+    
+    func finishedRecording(isSuccessfully: Bool) {
+        
+    }
+    
+    func recordingInterrupted() {
         
     }
 }

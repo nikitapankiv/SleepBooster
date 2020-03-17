@@ -15,8 +15,11 @@ protocol AudioRecorderDelegate: class {
     func recordingInterrupted()
 }
 
+protocol AudioRecorder {
+    func startRecording()
+}
 
-class AudioRecorder: NSObject, AVAudioRecorderDelegate {
+class AudioRecorderImplementation: NSObject, AVAudioRecorderDelegate, AudioRecorder {
     private var recordingSession: AVAudioSession = .sharedInstance()
     private var audioRecorder: AVAudioRecorder?
     private weak var delegate:AudioRecorderDelegate?

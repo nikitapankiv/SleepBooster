@@ -19,6 +19,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		341C9BD22420EED00047E043 /* nature.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = nature.m4a; sourceTree = "<group>"; };
+		341C9BD32420EED00047E043 /* alarm.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = alarm.m4a; sourceTree = "<group>"; };
 		3487C53A241FBDF5004DDD56 /* SleepBooster.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SleepBooster.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3487C53D241FBDF5004DDD56 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3487C53F241FBDF5004DDD56 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -43,6 +45,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		341C9BD12420EEC30047E043 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				341C9BD32420EED00047E043 /* alarm.m4a */,
+				341C9BD22420EED00047E043 /* nature.m4a */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
 		3487C531241FBDF5004DDD56 = {
 			isa = PBXGroup;
 			children = (
@@ -83,6 +94,7 @@
 		3487C553241FC8E0004DDD56 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
+				341C9BD12420EEC30047E043 /* Sounds */,
 				3487C554241FC8EF004DDD56 /* AudioRecorder.swift */,
 				3487C559241FDCAD004DDD56 /* AudioPlayer.swift */,
 			);

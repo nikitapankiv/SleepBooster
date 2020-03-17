@@ -25,4 +25,8 @@ class AudioPlayer {
     func play() {
         player.play(atTime: 0.0)
     }
+    
+    func stop() {
+        player.stop()
+    }
 }

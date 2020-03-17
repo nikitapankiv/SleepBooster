@@ -82,5 +82,14 @@ extension SleepVC: SleepView {
     func set(state: SleepState) {
         
     }
+    
+    func alarmed() {
+        let alert = UIAlertController(title: "Alarm", message: nil, preferredStyle: .alert)
+        let stopAction = UIAlertAction(title: "Stop", style: .default) { _ in
+            // Stop
+        }
+        alert.addAction(stopAction)
+        present(alert, animated: true) { }
+    }
 }
 
