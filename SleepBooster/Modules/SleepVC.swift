@@ -8,19 +8,9 @@
 
 import UIKit
 
-enum State {
-    case idle
-    case playing
-    case recording
-    case paused
-    case alarm
-}
-
 class SleepVC: UIViewController {
     
-    private var alarmTime: Date?
-    private var sleepTimerDuration: TimeInterval = 0
-    
+    // MARK: Outlets
     @IBOutlet weak var statusLabel: UILabel!
     
     @IBOutlet weak var timerCountLabel: UILabel!
@@ -28,22 +18,28 @@ class SleepVC: UIViewController {
     
     @IBOutlet weak var pickerTextField: UITextField!
     
+    // MARK: Injections
+    var presenter: SleepPresenter!
     
+    // MARK: View lifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let presenter = SleepPresenterImplementation(view: self)
         
-        
+        self.presenter = presenter
+        presenter.viewDidLoad()
     }
-    
-    
+
     // MARK: - UI
     @IBAction func actionPressed(_ sender: UIButton) {
+        presenter.actionButtonPressed()
     }
     
     // MARK: - SleepTimer
     
     private func setupSleepTimer() {
-        let availableMinutes = [1, 5, 10, 15, 20] // Can be injected
+        let availableMinutes = presenter.sleepTimerIntervals
         
         let alert = UIAlertController(title: "Sleep Timer", message: nil, preferredStyle: .actionSheet)
         
@@ -51,40 +47,40 @@ class SleepVC: UIViewController {
             guard let selectedTimeStr = a.title?.components(separatedBy: " ").first, let selectedMinutes = Int(selectedTimeStr) else {
                 return
             }
-            self?.selectedMinutes(minutes: selectedMinutes)
+            self?.presenter.sleepTimerSelected(minutes: selectedMinutes)
             }
         }
         actions.append(.init(title: "off", style: .destructive, handler: { [weak self] _ in
-            self?.selectedMinutes(minutes: 0)
+            self?.presenter.sleepTimerSelected(minutes: 0)
         }))
         actions.append(.init(title: "Cancel", style: .cancel, handler: nil))
         
         present(alert, animated: true) { }
     }
     
-    /// When passed 0 - the timer is turned off
-    private func selectedMinutes(minutes: Int) {
-        if minutes == 0 {
-            sleepTimerDuration = 0
-        } else {
-            sleepTimerDuration = TimeInterval(minutes) * 60
-        }
-        
-        // TODO: Reload UI
-    }
-    
     // MARK: - Alarm
     
     private func setupAlarmPicker() {
         let datePicker = UIDatePicker()
+        datePicker.addTarget(self, action: #selector(alarmTimeSelected(_:)), for: .valueChanged)
         datePicker.datePickerMode = .time
         
         pickerTextField.inputView = datePicker
     }
     
     private func presentAlarm() {
+        pickerTextField.becomeFirstResponder()
+    }
+    
+    @objc private func alarmTimeSelected(_ sender: UIDatePicker) {
+        presenter.alarmTimeSelected(time: sender.date)
+    }
+}
+
+// MARK: - SleepPresenterOutput
+extension SleepVC: SleepView {
+    func set(state: SleepState) {
         
     }
-
 }
 
