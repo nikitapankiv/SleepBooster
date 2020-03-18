@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		341C9BD4242285ED0047E043 /* alarm.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 341C9BD32420EED00047E043 /* alarm.m4a */; };
+		341C9BD5242285EF0047E043 /* nature.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 341C9BD22420EED00047E043 /* nature.m4a */; };
 		3487C53E241FBDF5004DDD56 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487C53D241FBDF5004DDD56 /* AppDelegate.swift */; };
 		3487C540241FBDF5004DDD56 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487C53F241FBDF5004DDD56 /* SceneDelegate.swift */; };
 		3487C542241FBDF5004DDD56 /* SleepVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3487C541241FBDF5004DDD56 /* SleepVC.swift */; };
@@ -178,6 +180,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				341C9BD5242285EF0047E043 /* nature.m4a in Resources */,
+				341C9BD4242285ED0047E043 /* alarm.m4a in Resources */,
 				3487C54A241FBDFC004DDD56 /* LaunchScreen.storyboard in Resources */,
 				3487C547241FBDFC004DDD56 /* Assets.xcassets in Resources */,
 				3487C545241FBDF5004DDD56 /* Main.storyboard in Resources */,

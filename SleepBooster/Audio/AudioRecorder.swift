@@ -17,6 +17,7 @@ protocol AudioRecorderDelegate: class {
 
 protocol AudioRecorder {
     func startRecording()
+    func stopRecording()
 }
 
 class AudioRecorderImplementation: NSObject, AVAudioRecorderDelegate, AudioRecorder {
@@ -24,6 +25,11 @@ class AudioRecorderImplementation: NSObject, AVAudioRecorderDelegate, AudioRecor
     private var audioRecorder: AVAudioRecorder?
     private weak var delegate:AudioRecorderDelegate?
     
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd-yyyy HH:mm:ss"
+        return formatter
+    }()
     
     init(delegate: AudioRecorderDelegate) {
         self.delegate = delegate
@@ -40,7 +46,7 @@ class AudioRecorderImplementation: NSObject, AVAudioRecorderDelegate, AudioRecor
     }
     
     func startRecording() {
-        let audioFilename = getDocumentsDirectory().appendingPathComponent("sleep.m4a")
+        let audioFilename = getDocumentsDirectory().appendingPathComponent("\(dateFormatter.string(from: Date())).m4a")
 
         let settings = [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -60,6 +66,11 @@ class AudioRecorderImplementation: NSObject, AVAudioRecorderDelegate, AudioRecor
         }
     }
     
+    func stopRecording() {
+        finishRecording(success: true)
+    }
+    
+    
     private func finishRecording(success: Bool) {
         audioRecorder?.stop()
         audioRecorder = nil
@@ -70,9 +81,10 @@ class AudioRecorderImplementation: NSObject, AVAudioRecorderDelegate, AudioRecor
     // MARK: - Delegate
 
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        if !flag {
-            finishRecording(success: false)
-        }
+//        if !flag {
+//            finishRecording(success: flag)
+//        }
+        finishRecording(success: flag)
     }
     
     // MARK: - Helpers

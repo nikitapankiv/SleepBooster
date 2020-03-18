@@ -14,7 +14,7 @@ class AudioPlayer {
     private var player: AVAudioPlayer
     
     init?(file: String) {
-        guard let filePath = Bundle.main.path(forResource: file, ofType: "wav"), let url = URL(string: filePath), let player = try? AVAudioPlayer(contentsOf: url) else {
+        guard let filePath = Bundle.main.path(forResource: file, ofType: "m4a"), let url = URL(string: filePath), let player = try? AVAudioPlayer(contentsOf: url) else {
             return nil
         }
         
@@ -22,8 +22,9 @@ class AudioPlayer {
         player.prepareToPlay()
     }
     
-    func play() {
-        player.play(atTime: 0.0)
+    func play(isRepeated: Bool = false) {
+        player.numberOfLoops = isRepeated ? -1 : 1
+        player.play()
     }
     
     func stop() {

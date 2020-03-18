@@ -53,7 +53,10 @@ class SleepPresenterImplementation {
     
     // MARK: - UI
     private var state: SleepState = .idle {
-        didSet { view?.set(state: state) }
+        didSet {
+            update(state: state)
+            view?.set(state: state)
+        }
     }
     
     let sleepTimerIntervals = [1, 5, 10, 15, 20]
@@ -67,6 +70,7 @@ class SleepPresenterImplementation {
         formatter.dateFormat = "hh:mm a"
         return formatter
     }()
+    
     var alarmTimeInfo: String {
         if let alarmTime = alarmTime {
             return dateFormatter.string(from: alarmTime)
@@ -79,6 +83,7 @@ class SleepPresenterImplementation {
     
     // MARK: - Private
     private var alarmTime: Date?
+    private var alarmTimer: Timer?
     /// In minutes
     private var sleepTimerDuration: Int = 0
 
@@ -106,6 +111,7 @@ extension SleepPresenterImplementation {
     func update(state: SleepState) {
         switch state {
         case .alarm:
+            audioRecorder.stopRecording()
             alarmPlayer?.play()
             view?.alarmed()
         case .idle:
@@ -117,9 +123,9 @@ extension SleepPresenterImplementation {
             break
         case .recording:
             sleepTimerPlayer?.stop()
-            guard let alarmTime = alarmTime else { return }
-            scheduleAlarm(date: alarmTime)
         }
+        
+        view?.updateUI()
     }
 }
 
@@ -141,11 +147,21 @@ extension SleepPresenterImplementation: SleepPresenter {
         view?.updateUI()
     }
     
+    // Main logic
     func actionButtonPressed() {
-        // Logic based on `state`
-        
-        guard let alarmTime = alarmTime else { return }
-        scheduleAlarm(date: alarmTime)
+        switch state {
+        case .idle:
+            guard let alarmTime = alarmTime else { return }
+            scheduleAlarm(date: alarmTime)
+            
+            if sleepTimerDuration == 0 {
+                audioRecorder.startRecording()
+            } else {
+                startSleepTimer()
+            }
+        default: break
+        }
+
     }
     
     func stopPressed() {
@@ -161,10 +177,11 @@ extension SleepPresenterImplementation {
             return
             // TODO: Handle
         }
-        sleepTimerPlayer.play()
+        sleepTimerPlayer.play(isRepeated: true)
         
         sleepTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(sleepTimerDuration) * 60, repeats: false, block: { [weak self] _ in
             guard let self = self else { return }
+            
             self.audioRecorder.startRecording() // AKA try start
             // Stop playing
             // Start recording
@@ -178,13 +195,30 @@ extension SleepPresenterImplementation {
 extension SleepPresenterImplementation {
     func scheduleAlarm(date: Date) {
         let content = UNNotificationContent()
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: date.timeIntervalSince(Date()), repeats: false)
+        let timeToFire = timeIntervalToAlarm(alarmDate: date)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeToFire, repeats: false)
         let alarmEvent = UNNotificationRequest(identifier: "sleepAlarm", content: content, trigger: trigger)
-        UNUserNotificationCenter.current().add(alarmEvent) { [weak self] error in
-            guard let self = self else { return }
-            // TODO: Extract to method
-            self.state = .alarm
+        UNUserNotificationCenter.current().add(alarmEvent) { _ in  }
+        alarmTimer = Timer.scheduledTimer(withTimeInterval: timeToFire, repeats: false, block: { [weak self] _ in
+            self?.state = .alarm
+        })
+    }
+    
+    private func timeIntervalToAlarm(alarmDate: Date) -> TimeInterval {
+        // Extract to another method
+        let calendar = Calendar.current
+        let rightNow = Date()
+
+        let requiredComponents = Set([Calendar.Component.year, .month, .day, .hour, .minute])
+        
+        var alarmComponents = calendar.dateComponents(requiredComponents, from: alarmDate)
+        if alarmDate < rightNow {
+            alarmComponents.day = (alarmComponents.day ?? 0) + 1
         }
+
+        guard let normedAlarmDate = calendar.date(from: alarmComponents) else { return 0 }
+        
+        return normedAlarmDate.timeIntervalSince(rightNow).rounded()
     }
 }
 
