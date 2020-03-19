@@ -71,7 +71,7 @@ class SleepVC: UIViewController {
             self?.presenter.sleepTimerSelected(minutes: selectedMinutes)
             }
         }
-        actions.append(.init(title: "off", style: .destructive, handler: { [weak self] _ in
+        actions.append(.init(title: "Off", style: .destructive, handler: { [weak self] _ in
             self?.presenter.sleepTimerSelected(minutes: 0)
         }))
         actions.append(.init(title: "Cancel", style: .cancel, handler: nil))
@@ -119,10 +119,6 @@ class SleepVC: UIViewController {
 
 // MARK: - SleepPresenterOutput
 extension SleepVC: SleepView {
-    func set(state: SleepState) {
-        
-    }
-    
     func updateUI() {
         timerCountLabel.text = presenter.sleepTimerInfo
         alarmTimeLabel.text = presenter.alarmTimeInfo
@@ -130,10 +126,10 @@ extension SleepVC: SleepView {
         actionButton.setTitle(presenter.buttonInfo, for: .normal)
     }
     
-    func showAlert(text: String, actionText: String) {
+    func showAlert(text: String, actionText: String, action: @escaping () -> ()) {
         let alert = UIAlertController(title: text, message: nil, preferredStyle: .alert)
-        let stopAction = UIAlertAction(title: actionText, style: .default) { [weak self] _ in
-            self?.presenter.stopPressed()
+        let stopAction = UIAlertAction(title: actionText, style: .default) { _ in
+            action()
         }
         alert.addAction(stopAction)
         present(alert, animated: true) { }

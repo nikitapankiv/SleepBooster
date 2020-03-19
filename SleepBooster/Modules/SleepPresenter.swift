@@ -8,8 +8,9 @@
 
 import Foundation
 import UserNotifications
-import AVFoundation // A bit redundant i know
+import AVFoundation 
 
+// State machine will work better here imo :)
 enum SleepState {
     case idle
     case playing
@@ -29,9 +30,8 @@ enum SleepState {
 }
 
 protocol SleepView: class {
-    func set(state: SleepState)
     func updateUI()
-    func showAlert(text: String, actionText: String)
+    func showAlert(text: String, actionText: String, action: @escaping ()->())
 }
 
 protocol SleepPresenter {
@@ -56,10 +56,7 @@ class SleepPresenterImplementation {
     
     // MARK: - UI
     private var state: SleepState = .idle {
-        didSet {
-            update(state: state)
-            view?.set(state: state)
-        }
+        didSet { update(state: state) }
     }
     
     let sleepTimerIntervals = [1, 5, 10, 15, 20]
@@ -119,7 +116,9 @@ extension SleepPresenterImplementation {
         case .alarm:
             audioRecorder.stop()
             alarmPlayer?.play()
-            view?.showAlert(text: "Alarm", actionText: "Stop")
+            view?.showAlert(text: "Alarm", actionText: "Stop", action: { [weak self] in
+                self?.stopPressed()
+            })
         case .idle:
             alarmPlayer?.stop()
             sleepTimerPlayer?.stop()
@@ -166,20 +165,24 @@ extension SleepPresenterImplementation: SleepPresenter {
     }
     
     func alarmTimeSelected(time: Date) {
-        // TODO: Check whether time it is today or tomorrow
         alarmTime = time
         view?.updateUI()
     }
     
     // Main logic
+    // God method
+    // Need some refactor
     func actionButtonPressed() {
         switch state {
         case .idle:
             guard let alarmTime = alarmTime else {
-                view?.showAlert(text: "Select alarm time", actionText: "Ok")
+                view?.showAlert(text: "Select alarm time", actionText: "OK", action: { })
                 return
             }
             scheduleAlarm(date: alarmTime)
+            
+            sleepTimer = nil
+            alarmTimer = nil
             
             if sleepTimerDuration == 0 {
                 audioRecorder.start()
@@ -207,7 +210,6 @@ extension SleepPresenterImplementation: SleepPresenter {
     
     func stopPressed() {
         state = .idle
-        // Stop alarm
     }
     
     var buttonInfo: String {
@@ -239,12 +241,8 @@ extension SleepPresenterImplementation {
         sleepTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(sleepTimerDuration) * 60, repeats: false, block: { [weak self] _ in
             guard let self = self else { return }
             
-            self.sleepTimerPlayer = nil // Required to know which to resume
-            self.audioRecorder.start() // AKA try start
-            // Stop playing
-            // Start recording
-            // Change state
-            // Schedule alarm
+            self.sleepTimerPlayer = nil // Required to know what to resume
+            self.audioRecorder.start()
         })
     }
 }
@@ -308,11 +306,5 @@ extension SleepPresenterImplementation: AudioRecorderDelegate {
         state = .recording
     }
     
-    func finishedRecording(isSuccessfully: Bool) {
-        
-    }
-    
-    func recordingInterrupted() {
-        
-    }
+    func finishedRecording(isSuccessfully: Bool) { }
 }

@@ -12,7 +12,6 @@ import AVFoundation
 protocol AudioRecorderDelegate: class {
     func recordingStarted()
     func finishedRecording(isSuccessfully: Bool)
-    func recordingInterrupted()
 }
 
 protocol AudioRecorder {
@@ -41,9 +40,8 @@ class AudioRecorderImplementation: NSObject, AVAudioRecorderDelegate, AudioRecor
             recordingSession.requestRecordPermission() { allowed in
                 // TODO: Add some logic here
             }
-            
         } catch {
-            
+            // TODO: Add some logic here
         }
     }
     
@@ -92,9 +90,6 @@ class AudioRecorderImplementation: NSObject, AVAudioRecorderDelegate, AudioRecor
     // MARK: - Delegate
 
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-//        if !flag {
-//            finishRecording(success: flag)
-//        }
         finishRecording(success: flag)
     }
     
