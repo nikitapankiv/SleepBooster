@@ -30,8 +30,8 @@ enum SleepState {
 
 protocol SleepView: class {
     func set(state: SleepState)
-    func alarmed()
     func updateUI()
+    func showAlert(text: String, actionText: String)
 }
 
 protocol SleepPresenter {
@@ -41,6 +41,7 @@ protocol SleepPresenter {
     var sleepTimerInfo: String { get }
     var alarmTimeInfo: String { get }
     var stateInfo: String { get }
+    var buttonInfo: String { get }
     
     func sleepTimerSelected(minutes: Int)
     func alarmTimeSelected(time: Date)
@@ -83,6 +84,7 @@ class SleepPresenterImplementation {
     
     var stateInfo: String { state.info }
     
+    
     // MARK: - Private
     private var alarmTime: Date?
     private var alarmTimer: Timer?
@@ -115,9 +117,9 @@ extension SleepPresenterImplementation {
     func update(state: SleepState) {
         switch state {
         case .alarm:
-            audioRecorder.stopRecording()
+            audioRecorder.stop()
             alarmPlayer?.play()
-            view?.alarmed()
+            view?.showAlert(text: "Alarm", actionText: "Stop")
         case .idle:
             alarmPlayer?.stop()
             sleepTimerPlayer?.stop()
@@ -150,7 +152,7 @@ extension SleepPresenterImplementation: SleepPresenter {
             
             switch state {
             case .playing: sleepTimerPlayer?.play()
-            case .recording: audioRecorder.startRecording()
+            case .recording: audioRecorder.start()
             default: break
             }
             isRestoreNeeded = false
@@ -173,22 +175,48 @@ extension SleepPresenterImplementation: SleepPresenter {
     func actionButtonPressed() {
         switch state {
         case .idle:
-            guard let alarmTime = alarmTime else { return }
+            guard let alarmTime = alarmTime else {
+                view?.showAlert(text: "Select alarm time", actionText: "Ok")
+                return
+            }
             scheduleAlarm(date: alarmTime)
             
             if sleepTimerDuration == 0 {
-                audioRecorder.startRecording()
+                audioRecorder.start()
             } else {
                 startSleepTimer()
             }
+        case .paused:
+            // Detect whether need to restore recording or playing
+            if let sleepTimerPlayer = sleepTimerPlayer { // We play sound
+                sleepTimerPlayer.play()
+                state = .playing
+            } else { // We record
+                audioRecorder.start()
+                state = .recording
+            }
+        case .playing:
+            state = .paused
+            sleepTimerPlayer?.pause() // Won't pause the timer, sry
+        case .recording:
+            state = .paused
+            audioRecorder.pause()
         default: break
         }
-
     }
     
     func stopPressed() {
         state = .idle
         // Stop alarm
+    }
+    
+    var buttonInfo: String {
+        switch state {
+        case .playing, .recording:
+            return "Pause"
+        default:
+            return "Play"
+        }
     }
 }
 
@@ -211,7 +239,8 @@ extension SleepPresenterImplementation {
         sleepTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(sleepTimerDuration) * 60, repeats: false, block: { [weak self] _ in
             guard let self = self else { return }
             
-            self.audioRecorder.startRecording() // AKA try start
+            self.sleepTimerPlayer = nil // Required to know which to resume
+            self.audioRecorder.start() // AKA try start
             // Stop playing
             // Start recording
             // Change state

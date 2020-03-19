@@ -101,6 +101,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="actionButton" destination="kcg-Jn-hlN" id="aWm-5D-CPS"/>
                         <outlet property="alarmTimeLabel" destination="g5t-fW-esI" id="exo-Jk-i5U"/>
                         <outlet property="pickerTextField" destination="I5K-hY-SIL" id="EuF-OF-9Oq"/>
                         <outlet property="statusLabel" destination="oCd-jo-ZxM" id="QNp-da-QP3"/>

@@ -17,6 +17,7 @@ class SleepVC: UIViewController {
     @IBOutlet weak var alarmTimeLabel: UILabel!
     
     @IBOutlet weak var pickerTextField: UITextField!
+    @IBOutlet weak var actionButton: UIButton!
     
     private var datePicker: UIDatePicker?
     
@@ -126,11 +127,12 @@ extension SleepVC: SleepView {
         timerCountLabel.text = presenter.sleepTimerInfo
         alarmTimeLabel.text = presenter.alarmTimeInfo
         statusLabel.text = presenter.stateInfo
+        actionButton.setTitle(presenter.buttonInfo, for: .normal)
     }
     
-    func alarmed() {
-        let alert = UIAlertController(title: "Alarm", message: nil, preferredStyle: .alert)
-        let stopAction = UIAlertAction(title: "Stop", style: .default) { [weak self] _ in
+    func showAlert(text: String, actionText: String) {
+        let alert = UIAlertController(title: text, message: nil, preferredStyle: .alert)
+        let stopAction = UIAlertAction(title: actionText, style: .default) { [weak self] _ in
             self?.presenter.stopPressed()
         }
         alert.addAction(stopAction)

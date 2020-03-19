@@ -31,4 +31,8 @@ class AudioPlayer {
     func stop() {
         player.stop()
     }
+    
+    func pause() {
+        player.pause()
+    }
 }

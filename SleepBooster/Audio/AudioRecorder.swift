@@ -16,8 +16,9 @@ protocol AudioRecorderDelegate: class {
 }
 
 protocol AudioRecorder {
-    func startRecording()
-    func stopRecording()
+    func start()
+    func pause()
+    func stop()
 }
 
 class AudioRecorderImplementation: NSObject, AVAudioRecorderDelegate, AudioRecorder {
@@ -40,12 +41,18 @@ class AudioRecorderImplementation: NSObject, AVAudioRecorderDelegate, AudioRecor
             recordingSession.requestRecordPermission() { allowed in
                 // TODO: Add some logic here
             }
+            
         } catch {
             
         }
     }
     
-    func startRecording() {
+    func start() {
+        if let audioRecorder = audioRecorder {
+            audioRecorder.record() // Resumes
+            return
+        }
+        
         let audioFilename = getDocumentsDirectory().appendingPathComponent("\(dateFormatter.string(from: Date())).m4a")
 
         let settings = [
@@ -60,17 +67,20 @@ class AudioRecorderImplementation: NSObject, AVAudioRecorderDelegate, AudioRecor
             audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
             audioRecorder?.delegate = self
             audioRecorder?.record()
-            
+        
             delegate?.recordingStarted()
         } catch {
             finishRecording(success: false)
         }
     }
     
-    func stopRecording() {
+    func stop() {
         finishRecording(success: true)
     }
     
+    func pause() {
+        audioRecorder?.pause()
+    }
     
     private func finishRecording(success: Bool) {
         audioRecorder?.stop()
