@@ -252,7 +252,10 @@ extension SleepPresenterImplementation {
 // MARK: - Alarm
 extension SleepPresenterImplementation {
     func scheduleAlarm(date: Date) {
-        let content = UNNotificationContent()
+        let content = UNMutableNotificationContent()
+        content.title = "Alarm"
+        content.body = "Wake up!"
+        content.sound = UNNotificationSound.defaultCriticalSound(withAudioVolume: 1.0)
         let timeToFire = timeIntervalToAlarm(alarmDate: date)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeToFire, repeats: false)
         let alarmEvent = UNNotificationRequest(identifier: "sleepAlarm", content: content, trigger: trigger)

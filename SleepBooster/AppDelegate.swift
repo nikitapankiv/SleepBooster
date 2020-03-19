@@ -7,15 +7,30 @@
 //
 
 import UIKit
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
-
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .sound, .alert]) {  [weak self] (success, error) in
+            DispatchQueue.main.async {
+                self?.showAlert(isSuccess: success)
+            }
+        }
+        
         return true
+    }
+    
+    private func showAlert(isSuccess: Bool) {
+        let text = isSuccess ? "Thanks for the providing access" : ":(((((((("
+        let alert = UIAlertController(title: "Alert", message: text, preferredStyle: .alert)
+
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+
+        UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true, completion: nil)
     }
 
     // MARK: UISceneSession Lifecycle
