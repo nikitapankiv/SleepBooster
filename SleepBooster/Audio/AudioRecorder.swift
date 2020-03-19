@@ -56,10 +56,11 @@ class AudioRecorderImplementation: NSObject, AVAudioRecorderDelegate, AudioRecor
         ]
 
         do {
+            audioRecorder = nil
             audioRecorder = try AVAudioRecorder(url: audioFilename, settings: settings)
             audioRecorder?.delegate = self
             audioRecorder?.record()
-
+            
             delegate?.recordingStarted()
         } catch {
             finishRecording(success: false)

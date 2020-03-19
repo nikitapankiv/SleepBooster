@@ -8,6 +8,7 @@
 
 import Foundation
 import UserNotifications
+import AVFoundation // A bit redundant i know
 
 enum SleepState {
     case idle
@@ -35,6 +36,7 @@ protocol SleepView: class {
 
 protocol SleepPresenter {
     func viewDidLoad()
+    func becomeActive()
     
     var sleepTimerInfo: String { get }
     var alarmTimeInfo: String { get }
@@ -86,12 +88,14 @@ class SleepPresenterImplementation {
     private var alarmTimer: Timer?
     /// In minutes
     private var sleepTimerDuration: Int = 0
+    
+    private var isRestoreNeeded: Bool = false
 
     // MARK: - Audio Recording
     private lazy var audioRecorder: AudioRecorder = { AudioRecorderImplementation(delegate: self) }()
     
     // MARK: - Sleep Timer
-    private let sleepTimerPlayer = AudioPlayer(file: "nature")
+    private var sleepTimerPlayer: AudioPlayer?
     private var sleepTimer: Timer?
     
     // MARK: - Alarm Player
@@ -133,6 +137,24 @@ extension SleepPresenterImplementation {
 extension SleepPresenterImplementation: SleepPresenter {
     func viewDidLoad() {
         view?.updateUI()
+        
+        setupPlayback() // May be redundant
+        
+        subscribeToEvents()
+    }
+    
+    func becomeActive() {
+        if isRestoreNeeded {
+            // Try Restore Session
+            setupPlayback()
+            
+            switch state {
+            case .playing: sleepTimerPlayer?.play()
+            case .recording: audioRecorder.startRecording()
+            default: break
+            }
+            isRestoreNeeded = false
+        }
     }
 
     /// When passed 0 - the timer is turned off
@@ -170,14 +192,21 @@ extension SleepPresenterImplementation: SleepPresenter {
     }
 }
 
+// MARK: - Subscription
+extension SleepPresenterImplementation {
+    func subscribeToEvents() {
+        NotificationCenter.default.addObserver(self, selector: #selector(interrupred(_:)), name: AVAudioSession.interruptionNotification, object: nil)
+    }
+}
+
 // MARK: - Sleep Timer
 extension SleepPresenterImplementation {
     func startSleepTimer() {
-        guard let sleepTimerPlayer = sleepTimerPlayer else {
-            return
-            // TODO: Handle
-        }
-        sleepTimerPlayer.play(isRepeated: true)
+        let sleepTimerPlayer = AudioPlayer(file: "nature")
+        sleepTimerPlayer?.play(isRepeated: true)
+        self.sleepTimerPlayer = sleepTimerPlayer
+        
+        state = .playing
         
         sleepTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(sleepTimerDuration) * 60, repeats: false, block: { [weak self] _ in
             guard let self = self else { return }
@@ -219,6 +248,25 @@ extension SleepPresenterImplementation {
         guard let normedAlarmDate = calendar.date(from: alarmComponents) else { return 0 }
         
         return normedAlarmDate.timeIntervalSince(rightNow).rounded()
+    }
+}
+
+// MARK: - Playback
+extension SleepPresenterImplementation {
+    func setupPlayback() {
+        let audioSession = AVAudioSession.sharedInstance()
+        do{
+            try audioSession.setCategory(AVAudioSession.Category.playback)
+            try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+        }
+        catch{
+            fatalError("playback failed")
+        }
+    }
+    
+    // MARK: - Interruprion
+    @objc func interrupred(_ notification: Notification) {
+        isRestoreNeeded = true
     }
 }
 

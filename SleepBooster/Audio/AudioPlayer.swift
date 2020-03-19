@@ -19,6 +19,7 @@ class AudioPlayer {
         }
         
         self.player = player
+        player.volume = 1.0
         player.prepareToPlay()
     }
     

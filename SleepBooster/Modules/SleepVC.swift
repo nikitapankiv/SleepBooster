@@ -33,8 +33,17 @@ class SleepVC: UIViewController {
         presenter.viewDidLoad()
         
         setupAlarmPicker()
+        subscribeToEvents()
+    }
+    
+    @objc private func becomeActive() {
+        presenter.becomeActive()
     }
 
+    private func subscribeToEvents() {
+        NotificationCenter.default.addObserver(self, selector: #selector(becomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+    }
+    
     // MARK: - UI
     @IBAction func actionPressed(_ sender: UIButton) {
         presenter.actionButtonPressed()
